@@ -8,9 +8,9 @@ import (
 	"time"
 )
 
-// qber computes the fraction of positions at which a and b disagree.
-// It is a test helper standing in for the public error estimation that
-// arrives in a later milestone.
+// qber computes the true fraction of positions at which a and b disagree,
+// which the omniscient test bench can do directly — unlike the parties,
+// who must estimate it from the sacrificed sample.
 func qber(t *testing.T, a, b []Bit) float64 {
 	t.Helper()
 	if len(a) != len(b) {

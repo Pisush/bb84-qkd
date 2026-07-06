@@ -39,8 +39,9 @@ high.
 - **Physical separation via channels.** Alice and Bob are goroutines with no
   shared memory; the quantum channel is a `chan Qubit`, and the public
   discussion travels on a separate classical channel that only ever carries
-  basis information (plus, in later milestones, the sacrificed error-check
-  sample).
+  basis information — with one protocol-sanctioned exception, the sacrificed
+  error-check sample. When Eve is enabled the quantum channel routes through
+  her goroutine; she never touches anything but what travels on the wire.
 - **Deterministic randomness.** Every stochastic step draws from a per-party
   `*rand.Rand` derived from a single seed, so runs are reproducible.
 - **Clean shutdown.** `Run` waits for all party goroutines before returning
