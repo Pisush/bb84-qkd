@@ -4,7 +4,10 @@
 // shared memory between parties, mirroring their physical separation.
 package bb84
 
-import "math/rand/v2"
+import (
+	"fmt"
+	"math/rand/v2"
+)
 
 // Bit is a classical bit with value 0 or 1.
 type Bit uint8
@@ -22,10 +25,14 @@ const (
 
 // String returns "+" for Rectilinear and "×" for Diagonal.
 func (b Basis) String() string {
-	if b == Rectilinear {
+	switch b {
+	case Rectilinear:
 		return "+"
+	case Diagonal:
+		return "×"
+	default:
+		return fmt.Sprintf("Basis(%d)", uint8(b))
 	}
-	return "×"
 }
 
 // Qubit is a single photon-like carrier prepared with one bit in one basis.

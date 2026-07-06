@@ -57,7 +57,7 @@ type Result struct {
 func Run(ctx context.Context, cfg Config) (Result, error) {
 	cfg = cfg.withDefaults()
 	if cfg.N < 0 {
-		return Result{}, fmt.Errorf("bb84: config N must be positive, got %d", cfg.N)
+		return Result{}, fmt.Errorf("bb84: config N must be non-negative, got %d", cfg.N)
 	}
 
 	// Independent, deterministic randomness per party. The second PCG
