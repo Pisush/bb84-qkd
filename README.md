@@ -49,22 +49,44 @@ high.
 
 ## Usage
 
+### CLI
+
+```sh
+$ go run github.com/Pisush/bb84-qkd/cmd/bb84@latest -n 4096 -seed 42
+BB84 run (seed 42)
+  qubits sent        4096
+  eavesdropper       off
+  sifted key length  2073 (50.6% of sent)
+  sacrificed sample  518 bits
+  estimated QBER     0.0000 (abort threshold 0.1100)
+  decision           ACCEPT — final key length 1555
+
+$ go run github.com/Pisush/bb84-qkd/cmd/bb84@latest -n 4096 -seed 42 -eve
+BB84 run (seed 42)
+  qubits sent        4096
+  eavesdropper       intercept-resend, fraction 1.00
+  sifted key length  2002 (48.9% of sent)
+  sacrificed sample  501 bits
+  estimated QBER     0.2315 (abort threshold 0.1100)
+  decision           ABORT — channel is not trustworthy, key discarded
+```
+
+Flags: `-n` qubits (default 4096), `-eve` enable the eavesdropper,
+`-eve-fraction` how much of the stream Eve attacks (default 1.0),
+`-seed` for reproducible runs (0 = clock-derived), `-sample-fraction`
+(default 0.25), `-threshold` abort threshold (default 0.11). The installed
+binary exits 0 on accept, 1 on abort, 2 on error (`go run` collapses any
+nonzero child exit to 1).
+
+### Library
+
 ```go
-res, err := bb84.Run(context.Background(), bb84.Config{N: 4096, Seed: 42})
+res, err := bb84.Run(context.Background(), bb84.Config{N: 4096, Seed: 42, Eve: true})
 if err != nil {
     log.Fatal(err)
 }
-fmt.Printf("sifted key length: %d\n", len(res.AliceSifted))
+fmt.Printf("QBER %.4f, accepted=%v, key length %d\n", res.QBER, res.Accepted, len(res.AliceKey))
 ```
-
-A `cmd/bb84` CLI (flags `-n`, `-eve`, `-eve-fraction`, `-seed`) arrives in
-milestone M3.
-
-## Milestones
-
-1. **M1** — Qubit type, Alice/Bob goroutines over a quantum channel, sifting.
-2. **M2** — Eve (intercept-resend), error estimation, QBER.
-3. **M3** — Abort decision, `cmd/bb84` CLI, clean-shutdown guarantees.
 
 ## Limitations
 

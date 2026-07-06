@@ -21,9 +21,12 @@ import (
 // values publicly. Bob replies with the number of mismatches, from which
 // she computes the QBER. The sampled bits are removed from the key.
 //
+// Phase 4 (decision): she aborts, discarding the key, if the QBER exceeds
+// threshold.
+//
 // Alice owns rng and all of her per-run state; nothing is shared with the
 // other parties — every exchange goes through a channel.
-func alice(ctx context.Context, n int, sampleFraction float64, rng *rand.Rand, quantum chan<- Qubit, cc *classicalChannel) (partyOutput, error) {
+func alice(ctx context.Context, n int, sampleFraction, threshold float64, rng *rand.Rand, quantum chan<- Qubit, cc *classicalChannel) (partyOutput, error) {
 	bits := make([]Bit, n)
 	bases := make([]Basis, n)
 	for i := range n {
@@ -85,5 +88,5 @@ func alice(ctx context.Context, n int, sampleFraction float64, rng *rand.Rand, q
 	if k > 0 {
 		out.qber = float64(mismatches) / float64(k)
 	}
-	return out, nil
+	return out.decide(threshold), nil
 }
