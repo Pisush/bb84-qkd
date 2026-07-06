@@ -74,8 +74,9 @@ BB84 run (seed 42)
 Flags: `-n` qubits (default 4096), `-eve` enable the eavesdropper,
 `-eve-fraction` how much of the stream Eve attacks (default 1.0),
 `-seed` for reproducible runs (0 = clock-derived), `-sample-fraction`
-(default 0.25), `-threshold` abort threshold (default 0.11). Exit codes:
-0 accept, 1 abort, 2 error.
+(default 0.25), `-threshold` abort threshold (default 0.11). The installed
+binary exits 0 on accept, 1 on abort, 2 on error (`go run` collapses any
+nonzero child exit to 1).
 
 ### Library
 

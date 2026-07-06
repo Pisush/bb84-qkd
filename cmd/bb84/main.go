@@ -73,7 +73,7 @@ func run(args []string, out, errOut io.Writer) int {
 
 	res, err := bb84.Run(context.Background(), cfg)
 	if err != nil {
-		fmt.Fprintf(errOut, "bb84: %v\n", err)
+		fmt.Fprintf(errOut, "%v\n", err) // library errors already carry the bb84: prefix
 		return 2
 	}
 
