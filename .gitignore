@@ -1,0 +1,14 @@
+# Binaries
+/bb84
+/cmd/bb84/bb84
+*.exe
+
+# Test and profiling artifacts
+*.test
+*.out
+*.prof
+
+# Editor/OS noise
+.DS_Store
+.idea/
+.vscode/
