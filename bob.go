@@ -22,9 +22,13 @@ import (
 // count publicly, and computes the QBER. The sampled bits are removed from
 // the key.
 //
+// Phase 4 (decision): he aborts, discarding the key, if the QBER exceeds
+// threshold. His inputs to the decision are public, so it always matches
+// Alice's.
+//
 // Bob owns rng and all of his per-run state; nothing is shared with the
 // other parties — every exchange goes through a channel.
-func bob(ctx context.Context, rng *rand.Rand, quantum <-chan Qubit, cc *classicalChannel) (partyOutput, error) {
+func bob(ctx context.Context, threshold float64, rng *rand.Rand, quantum <-chan Qubit, cc *classicalChannel) (partyOutput, error) {
 	var (
 		outcomes []Bit
 		bases    []Basis
@@ -90,5 +94,5 @@ receive:
 	if len(ann.positions) > 0 {
 		out.qber = float64(mismatches) / float64(len(ann.positions))
 	}
-	return out, nil
+	return out.decide(threshold), nil
 }

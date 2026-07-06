@@ -82,7 +82,9 @@ func TestRunNoEveQBERZeroAndKeysMatch(t *testing.T) {
 }
 
 func TestRunSampleAccounting(t *testing.T) {
-	res, err := Run(context.Background(), Config{N: 4096, Seed: 11, Eve: true})
+	// The lax threshold keeps the noisy full-Eve run accepted, so the
+	// final keys survive for the length accounting below.
+	res, err := Run(context.Background(), Config{N: 4096, Seed: 11, Eve: true, QBERThreshold: 0.9})
 	if err != nil {
 		t.Fatalf("Run: %v", err)
 	}
