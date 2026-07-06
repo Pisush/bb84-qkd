@@ -9,12 +9,22 @@ import (
 // the expected message arrived.
 var errClosed = errors.New("bb84: classical channel closed unexpectedly")
 
+// sampleAnnouncement is Alice's public disclosure of the error-check
+// sample: positions into the sifted key together with her bit values
+// there. These bits are sacrificed — they are removed from the key
+// precisely because they have been made public.
+type sampleAnnouncement struct {
+	// positions index into the sifted key (not the raw transmission).
+	positions []int
+	// bits are Alice's sifted-key bits at those positions.
+	bits []Bit
+}
+
 // classicalChannel models the authenticated public classical channel of
 // BB84. Each field carries exactly one phase of the public discussion, and
 // the message direction is fixed by which end each party holds. Only basis
-// information travels here in this milestone; sifted-key bit values never
-// do (later milestones add the sacrificed error-check sample, which is the
-// sole exception the protocol allows).
+// information travels here — sifted-key bit values never do, with a single
+// protocol-sanctioned exception: the sacrificed error-check sample.
 type classicalChannel struct {
 	// bases carries Bob → Alice: the measurement basis Bob used for each
 	// position, in transmission order.
@@ -22,6 +32,11 @@ type classicalChannel struct {
 	// matches carries Alice → Bob: the positions at which Bob's basis
 	// matched Alice's preparation basis (the sifted positions).
 	matches chan []int
+	// sample carries Alice → Bob: the sacrificed error-check sample.
+	sample chan sampleAnnouncement
+	// mismatches carries Bob → Alice: how many sample positions disagreed
+	// with his sifted key, from which both sides compute the QBER.
+	mismatches chan int
 }
 
 // newClassicalChannel wires up the public discussion channels. They are
@@ -29,8 +44,10 @@ type classicalChannel struct {
 // has received it.
 func newClassicalChannel() *classicalChannel {
 	return &classicalChannel{
-		bases:   make(chan []Basis),
-		matches: make(chan []int),
+		bases:      make(chan []Basis),
+		matches:    make(chan []int),
+		sample:     make(chan sampleAnnouncement),
+		mismatches: make(chan int),
 	}
 }
 
